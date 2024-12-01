@@ -2,20 +2,14 @@ import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import {
   Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
   Container,
-  Divider,
   Grid,
-  MenuItem,
-  TextField,
   Typography
 } from '@mui/material';
-import { OverviewTotalBalance } from '../../components/dashboard/overview/overview-total-balance';
-import { OverviewStockAlerts } from '../../components/dashboard/overview/overview-stock-alerts';
-import { OverviewLatestProductions } from '../../components/dashboard/overview/overview-latest-production';
+import { OverviewLowInventoryStockAlert } from '../../components/dashboard/overview/overview-low-inventory-stock-alert';
+import { OverviewLowIngredientStockAlert } from '../../components/dashboard/overview/overview-low-ingredient-stock-alert';
+import { OverviewBestSellersByQuantity } from '../../components/dashboard/overview/overview-best-sellers-by-quantity';
+import { OverviewBestSellersByPrice } from '../../components/dashboard/overview/overview-best-sellers-by-price';
 import { withAuthGuard } from '../../hocs/with-auth-guard';
 import { withDashboardLayout } from '../../hocs/with-dashboard-layout';
 import { gtm } from '../../lib/gtm';
@@ -126,28 +120,28 @@ const Overview = () => {
               md={8}
               xs={12}
             >
-              <OverviewTotalBalance />
+              <OverviewLowInventoryStockAlert />
             </Grid>
             <Grid
               item
               md={4}
               xs={12}
             >
-              <OverviewStockAlerts />
+              <OverviewBestSellersByQuantity />
             </Grid>
             <Grid
               item
               md={8}
               xs={12}
             >
-              <OverviewLatestProductions />
+              <OverviewLowIngredientStockAlert />
             </Grid>
             <Grid
               item
               md={4}
               xs={12}
             >
-              
+              <OverviewBestSellersByPrice />
             </Grid>
             <Grid
               item

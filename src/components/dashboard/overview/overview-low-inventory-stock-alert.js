@@ -1,7 +1,6 @@
 import numeral from 'numeral';
 import {
   Box,
-  Button,
   Card,
   CardContent,
   Divider,
@@ -10,39 +9,34 @@ import {
   ListItemText,
   Typography
 } from '@mui/material';
-import { ArrowRight as ArrowRightIcon } from '../../../icons/arrow-right';
+import inventoryService from '../../../services/inventory-service';
+import { useEffect, useState } from 'react';
+import { getRandomColor } from '../../../utils/random-color';
 
+export const OverviewLowInventoryStockAlert = (props) => {
+  const [sortedInventories, setSortedInventories] = useState([]);
+  
+  useEffect(() => {
+    const listInventory = async () => {
+      const data = await inventoryService.getAll();
+      const filtered = data.filter(entity => (entity.quantity - entity.restockLevel) <= 0);
+      setSortedInventories(filtered.sort((a, b) => (a.quantity - a.restockLevel) - (b.quantity - b.restockLevel)));
+    }
 
-const quantities = [
-  {
-    amount: 12,
-    color: '#A020F0',
-    name: 'Chicken Pie'
-  },
-  {
-    amount: 25,
-    color: '#FFA500',
-    name: 'Chesse crockett'
-  },
-  {
-    amount: 15,
-    color: '#FF0000',
-    name: 'Chese Whaffle'
-  }
-];
-
-
-export const OverviewStockAlerts = (props) => (
+    listInventory();
+  }, []);
+  
+  return (
   <Card {...props}>
     <CardContent>
       <Typography
         color="textSecondary"
         variant="overline"
       >
-        Low Stock Alert
+        Low Inventory Stock Alert
       </Typography>
       <Typography variant="h4">
-        {numeral(52).format('0,0') + ' ' + 'units'}
+        {numeral(sortedInventories.length).format('0,0') + ' ' + 'inventories'}
       </Typography>
 
       <Divider sx={{ my: 2 }} />
@@ -50,16 +44,16 @@ export const OverviewStockAlerts = (props) => (
         color="textSecondary"
         variant="overline"
       >
-        Available stock
+        Available quantity
       </Typography>
       <List
         disablePadding
         sx={{ pt: 2 }}
       >
-        {quantities.map((stock) => (
+        {sortedInventories.map((inventory) => (
           <ListItem
             disableGutters
-            key={stock.name}
+            key={inventory.name}
             sx={{
               pb: 2,
               pt: 0
@@ -84,7 +78,7 @@ export const OverviewStockAlerts = (props) => (
                     <Box
                       sx={{
                         border: 3,
-                        borderColor: stock.color,
+                        borderColor: getRandomColor(),
                         borderRadius: '50%',
                         height: 16,
                         mr: 1,
@@ -92,14 +86,14 @@ export const OverviewStockAlerts = (props) => (
                       }}
                     />
                     <Typography variant="subtitle2">
-                      {stock.name}
+                      {inventory.name}
                     </Typography>
                   </Box>
                   <Typography
                     color="textSecondary"
                     variant="subtitle2"
                   >
-                    {numeral(stock.amount).format('0,0')}
+                    {numeral(inventory.quantity - inventory.restockLevel).format('0.00')}
                   </Typography>
                 </Box>
               )}
@@ -115,4 +109,5 @@ export const OverviewStockAlerts = (props) => (
       </Box>
     </CardContent>
   </Card>
-);
+  );
+};
